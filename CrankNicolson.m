@@ -12,7 +12,7 @@ function w = crnkNclsn(L,T,alpha,m,n,funk)
 %	m :Numero de intervalos espaciales para la creacion de la malla.
 %	n :Numero de intervalos Temporales para la creacion de la malla.
 %	w :Aproximación a u(x,t) de manera discreta en x y t.
-%	funk: Funcion que representa el valor inicial de u(x,0).
+%	funk: Funcion que representa el valor inicial de u(x,0) = f(x).
 
 %inicializar h, k, lambda, y w
 h = L./m;
@@ -23,5 +23,20 @@ w = sparse(m+1,n);
 %inicializar primera columna de la matriz w
 w(2:m,1) = funk(h.*(1:(m-1)).')
 
+%Se procede a construir las matrices A y B con base en lambda
+Adiag = repmat([-lambda./2 1+lambda -lambda./2],m-1,1);
+Bdiag = repmat([lambda./2 1-lambda lambda./2],m-1,1);
+A = spdiags(Adiag,[-1 0 1],m-1,m-1)
+B = spdiags(Bdiag,[-1 0 1],m-1,m-1)
+
+%Se completa la aproximacion w con un ciclo para solucionar el sistema:
+%	A w(:,i+1) = B w(:,i)
+for i = 1: (n-1)
+	w(2:m,i+1) = A\(B*w(2:m,i));
+end
+
+%Para presentar la matriz la pasamos de sparse a su version completa.
+w = full(w);
+end
 
 
