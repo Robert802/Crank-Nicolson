@@ -86,9 +86,9 @@ Las ecuaciones diferenciales parabólicas pueden ser solucionadas computacionalm
 
 \section*{Introduction}
 
-El método de diferencias hacia adelante es de carácter totalmente explícito, pero con el problema de que sólo para ciertos valores de \lambda =\frac{\alpha ^2 k}{h^2}, mas precisamente para \lambda < \frac{1}{2} presenta un comportamiento estable en los cálculos. La primera solución ha sido reemplazarlo por el método de diferencias hacia atrás que no tiene ningún problema de estabilidad, aunque a cambio era un método implícito, precisando de la resolución de un sistema lineal para cada avance del tiempo.
+El método de diferencias hacia adelante es de carácter totalmente explícito, pero con el problema de que sólo para ciertos valores de $\lambda =\frac{\alpha ^2 k}{h^2}$, mas precisamente para $\lambda < \frac{1}{2}$ presenta un comportamiento estable en los cálculos. La primera solución ha sido reemplazarlo por el método de diferencias hacia atrás que no tiene ningún problema de estabilidad, aunque a cambio era un método implícito, precisando de la resolución de un sistema lineal para cada avance del tiempo.
 
-Pero ambos llevaban asociados un orden de truncación del tipo O(h2) + O(k), o sea orden 1 en el tiempo, lo que suele ser poco en los casos prácticos en los que una precisión adecuada obliga a distanciar muy poco los nodos de t, o sea a tomar k muy pequeño. Existe un método que, con la dificultad de ser implícito, no tiene problemas de estabilidad y además posee un orden de truncación O(h2) + O(k2), permitiendo entonces disminuciones menos importantes del paso k manteniendo una buena precisión de los resultados, Este es el denominado método de Crank-Nicolson.
+Pero ambos llevaban asociados un orden de truncación del tipo $O(h2) + O(k)$, o sea orden 1 en el tiempo, lo que suele ser poco en los casos prácticos en los que una precisión adecuada obliga a distanciar muy poco los nodos de t, o sea a tomar k muy pequeño. Existe un método que, con la dificultad de ser implícito, no tiene problemas de estabilidad y además posee un orden de truncación $O(h2) + O(k2)$, permitiendo entonces disminuciones menos importantes del paso k manteniendo una buena precisión de los resultados, Este es el denominado método de Crank-Nicolson.
 
 %------------------------------------------------
 
