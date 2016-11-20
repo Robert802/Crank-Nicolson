@@ -1,4 +1,4 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Thin Sectioned Essay
 % LaTeX Template
 % Version 1.0 (3/8/13)
@@ -25,6 +25,7 @@
 \usepackage{graphicx} % Required for including pictures
 \usepackage{wrapfig} % Allows in-line images
 \usepackage{amsmath}
+\usepackage{enumerate} 
 \usepackage{mathpazo} % Use the Palatino font
 \usepackage[T1]{fontenc} % Required for accented characters
 \usepackage[utf8x]{inputenc} % Enecoding used in the document
@@ -73,10 +74,10 @@
 \renewcommand{\abstractname}{Resumen} % Uncomment to change the name of the abstract to something else
 
 \begin{abstract}
-Las ecuaciones diferenciales parabólicas pueden ser solucionadas computacionalmente mediante dos métodos ampliamente conocidos como lo son el de las diferencias hacia atrás y hacia adelante. El método de diferencias hacia adelante de carácter explicito presenta inestabilidad bajo ciertas condiciones, mientras que el método de las diferencias hacia atrás es de carácter implícito por lo cual es estable, pero con el defecto de que a pesar de que su error de truncación espacial es de orden dos su error de truncación temporal es de orden uno, por lo anterior se hace necesario el estudio de un método que corrija dichos percances. En el presente documento se estudia como surge el método necesario y su implementación computacional.
+Las ecuaciones diferenciales parabólicas pueden ser solucionadas computacionalmente mediante dos métodos ampliamente conocidos como lo son el de las diferencias hacia atrás y hacia adelante. El método de diferencias hacia adelante de carácter explicito presenta inestabilidad bajo ciertas condiciones, mientras que el método de las diferencias hacia atrás es de carácter implícito por lo cual es estable, pero con el defecto de que a pesar de que su error de truncación espacial es de orden dos su error de truncación temporal es de orden uno, por lo anterior se hace necesario el estudio de un método que corrija dichos percances, en el documento se estudia como surge el método y su implementación computacional.
 \end{abstract}
 
-%\hspace*{3,6mm}\textit{Keywords:} lorem , ipsum , dolor , sit amet , lectus % Keywords
+\hspace*{3,6mm}\textit{Keywords:} lorem , ipsum , dolor , sit amet , lectus % Keywords
 
 \vspace{30pt} % Some vertical space between the abstract and first section
 
@@ -84,7 +85,7 @@ Las ecuaciones diferenciales parabólicas pueden ser solucionadas computacionalm
 %	ESSAY BODY
 %----------------------------------------------------------------------------------------
 
-\section*{Introducción}
+\section*{Introduction}
 
 El método de diferencias hacia adelante es de carácter totalmente explícito, pero con el problema de que sólo para ciertos valores de
 \begin{equation}
@@ -95,7 +96,7 @@ El método de diferencias hacia adelante es de carácter totalmente explícito, 
 \lambda < \frac{1}{2}
 \end{equation}, presenta un comportamiento estable en los cálculos. La primera solución ha sido reemplazarlo por el método de diferencias hacia atrás que no tiene ningún problema de estabilidad, aunque a cambio era un método implícito, precisando de la resolución de un sistema lineal para cada avance del tiempo.
 
-Pero ambos llevaban asociados un orden de truncación del tipo $O(h2) + O(k)$, o sea orden 1 en el tiempo, lo que suele ser poco en los casos prácticos en los que una precisión adecuada obliga a distanciar muy poco los nodos de t, o sea a tomar $k$ muy pequeño. Existe un método que, con la dificultad de ser implícito, no tiene problemas de estabilidad y además posee un orden de truncación $O(h^2) + O(k^2)$, permitiendo entonces disminuciones menos importantes del paso k manteniendo una buena precisión de los resultados, Este es el denominado método de Crank-Nicolson.
+Pero ambos llevaban asociados un orden de truncación del tipo $O(h2) + O(k)$, o sea orden 1 en el tiempo, lo que suele ser poco en los casos prácticos en los que una precisión adecuada obliga a distanciar muy poco los nodos de t, o sea a tomar k muy pequeño. Existe un método que, con la dificultad de ser implícito, no tiene problemas de estabilidad y además posee un orden de truncación $O(h2) + O(k2)$, permitiendo entonces disminuciones menos importantes del paso k manteniendo una buena precisión de los resultados, Este es el denominado método de Crank-Nicolson.
 
 %------------------------------------------------
 
@@ -162,6 +163,12 @@ $$
 %------------------------------------------------
 
 \section*{Aplicaciones}
+El método de Crank-Nicolson puede ser aplicado para encontrar soluciones aproximadas a una gran cantidad de problemas físicos cuyo modelamiento lleva a ecuaciones parabólicas entre estos se encuentran:  
+\begin{itemize}
+    \item La ecuación de propagación del calor (ecuación de difusión).
+    \item Densidad de neutrones en un reactor nuclear.
+    \item La ecuación de Schrödinger dependiente del tiempo.
+\end{itemize}
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
