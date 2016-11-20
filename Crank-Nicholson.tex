@@ -24,7 +24,7 @@
 \usepackage[protrusion=true,expansion=true]{microtype} % Better typography
 \usepackage{graphicx} % Required for including pictures
 \usepackage{wrapfig} % Allows in-line images
-
+\usepackage{amsmath}
 \usepackage{mathpazo} % Use the Palatino font
 \usepackage[T1]{fontenc} % Required for accented characters
 \usepackage[utf8x]{inputenc} % Enecoding used in the document
@@ -52,7 +52,7 @@
 %	TITLE
 %----------------------------------------------------------------------------------------
 
-\title{\textbf{Solución numerica de ecuaciones diferenciales parciales parabólicas por el método de Crank-Nicolson.}\\ % Title
+\title{\textbf{Solución numérica de ecuaciones diferenciales parciales parabólicas por el método de Crank-Nicolson.}\\ % Title
 %Focused and Deliciously Witty Subtitle} % Subtitle
 }
 \author{\textsc{Roberto Largo Taborda, Duban Arley Medina Eusse} % Author
@@ -86,39 +86,82 @@ Las ecuaciones diferenciales parabólicas pueden ser solucionadas computacionalm
 
 \section*{Introduction}
 
-El método de diferencias hacia adelante es de carácter totalmente explícito, pero con el problema de que sólo para ciertos valores de \lambda =\frac{\alpha ^2 k}{h^2}, mas precisamente para \lambda < \frac{1}{2}
+El método de diferencias hacia adelante es de carácter totalmente explícito, pero con el problema de que sólo para ciertos valores de
+\begin{equation}
+\lambda =\frac{\alpha ^2 k}{h^2}
+\end{equation}
+, mas precisamente para
+\begin{equation}
+\lambda < \frac{1}{2}
+\end{equation}, presenta un comportamiento estable en los cálculos. La primera solución ha sido reemplazarlo por el método de diferencias hacia atrás que no tiene ningún problema de estabilidad, aunque a cambio era un método implícito, precisando de la resolución de un sistema lineal para cada avance del tiempo.
 
-Nullam semper quam at ante convallis posuere. Ut faucibus tellus ac massa luctus consectetur. Nulla pellentesque tortor et aliquam vehicula. Maecenas imperdiet euismod enim ut pharetra. Suspendisse pulvinar sapien vitae placerat pellentesque. Nulla facilisi. Aenean vitae nunc venenatis, vehicula neque in, congue ligula.
-
-Pellentesque quis neque fringilla, varius ligula quis, malesuada dolor. Aenean malesuada urna porta, condimentum nisl sed, scelerisque nisi. Suspendisse ac orci quis massa porta dignissim. Morbi sollicitudin, felis eget tristique laoreet, ante lacus pretium lacus, nec ornare sem lorem a velit. Pellentesque eu erat congue, ullamcorper ante ut, tristique turpis. Nam sodales mi sed nisl tincidunt vestibulum. Interdum et malesuada fames ac ante ipsum primis in faucibus.
+Pero ambos llevaban asociados un orden de truncación del tipo $O(h2) + O(k)$, o sea orden 1 en el tiempo, lo que suele ser poco en los casos prácticos en los que una precisión adecuada obliga a distanciar muy poco los nodos de t, o sea a tomar k muy pequeño. Existe un método que, con la dificultad de ser implícito, no tiene problemas de estabilidad y además posee un orden de truncación $O(h2) + O(k2)$, permitiendo entonces disminuciones menos importantes del paso k manteniendo una buena precisión de los resultados, Este es el denominado método de Crank-Nicolson.
 
 %------------------------------------------------
 
 \section*{Desarollo matemático}
 
-Cras gravida, est vel interdum euismod, tortor mi lobortis mi, quis adipiscing elit lacus ut orci. Phasellus nec fringilla nisi, ut vestibulum neque. Aenean non risus eu nunc accumsan condimentum at sed ipsum.
-\begin{wrapfigure}{l}{0.4\textwidth} % Inline image example
-\begin{center}
-\includegraphics[width=0.38\textwidth]{fish.png}
-\end{center}
-\caption{Fish}
-\end{wrapfigure}
-Aliquam fringilla non diam sed varius. Suspendisse tellus felis, hendrerit non bibendum ut, adipiscing vitae diam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla lobortis purus eget nisl scelerisque, commodo rhoncus lacus porta. Vestibulum vitae turpis tincidunt, varius dolor in, dictum lectus. Aenean ac ornare augue, ac facilisis purus. Sed leo lorem, molestie sit amet fermentum id, suscipit ut sem. Vestibulum orci arcu, vehicula sed tortor id, ornare dapibus lorem. Praesent aliquet iaculis lacus nec fermentum. Morbi eleifend blandit dolor, pharetra hendrerit neque ornare vel. Nulla ornare, nisl eget imperdiet ornare, libero enim interdum mi, ut lobortis quam velit bibendum nibh.
+El probrema a solucionar esta dado por:
+$$\frac{\partial u}{\partial t}=\alpha^2\frac{\partial^2 u}{\partial x^2}$$
+Bajo las siguientes condiciones:
+$$u(x,0)=f(x)$$
+$$u(0,t)=0\hspace{1cm}u(l,t)=0$$
+Para el método de las diferencias hacia adelante se tiene:
+$$\frac{u_{n,n+1}-u_{n,m}}{k}-\alpha^2\frac{u_{n+1,m}-2u_{n,m}+u_{n-1,m}}{h^2}=0$$
+Para el método de las diferencias hacia atrás se tiene: 
+$$\frac{u_{n,m}-u_{n,m-1}}{k}-\alpha^2\frac{u_{n+1,m}-2u_{n,m}+u_{n-1,m}}{h^2}=0$$
+Escribiendo la ecuación anterior para m + 1 y realizando la media aritmética entre el método de las diferencias hacia atrás y hacia adelante se obtiene: 
+$$\frac{u_{n,m+1}-u_{n,m}}{k}-\frac{\alpha^2}{2}(\frac{u_{n+1,m}-2u_{n,m}+u_{n-1,m}}{h^2}+\frac{u_{n+1,m+1}-2u_{n,m+1}+u_{n-1,m+1}}{h^2})=0$$
+La anterior ecuación es la correspondiente al método de Crank-nicolson, para llevarla a su forma matricial:
 
-Morbi tempor congue porta. Proin semper, leo vitae faucibus dictum, metus mauris lacinia lorem, ac congue leo felis eu turpis. Sed nec nunc pellentesque, gravida eros at, porttitor ipsum. Praesent consequat urna a lacus lobortis ultrices eget ac metus. In tempus hendrerit rhoncus. Mauris dignissim turpis id sollicitudin lacinia. Praesent libero tellus, fringilla nec ullamcorper at, ultrices id nulla. Phasellus placerat a tellus a malesuada.
+$$(1+\lambda)u_{n,m+1}-\frac{\lambda}{2}u_{n+1,m+1}-\frac{\lambda}{2}u_{n-1,m+1}=(1-\lambda)u_{n,m}+\frac{\lambda}{2}u_{n+1,m}+\frac{\lambda}{2}u_{n-1,m}$$
+$$u^{(m)}=(u_{1,m},u_{2,m},\ldots,u_{N-1,m})$$
+$$A_1u^{(m+1)}=A_2u^{(m)}$$
+Donde
+$$
+A_1=
+\begin{bmatrix}
+  1+\lambda  & -\frac{\lambda}{2} & 0 & \ldots\\ 
+ -\frac{\lambda}{2} & 1+\lambda & -\frac{\lambda}{2} & \ldots\\ 
+ 0 & -\frac{\lambda}{2} & 1+\lambda & \ldots\\ 
+ \vdots & \vdots & \vdots & \ddots 
+\end{bmatrix}
+$$
+$$
+A_2=
+\begin{bmatrix}
+ 1-\lambda  & \frac{\lambda}{2} & 0 & \ldots\\ 
+ \frac{\lambda}{2} & 1-\lambda & \frac{\lambda}{2} & \ldots\\ 
+ 0 & \frac{\lambda}{2} & 1-\lambda & \ldots\\ 
+ \vdots & \vdots & \vdots & \ddots 
+\end{bmatrix}
+$$
+Podemos escribir en terminos de una solo matriz B a $A_1$ y $A_2$
+$$
+A_1=I+\frac{\lambda}{2}B
+$$
+$$
+A_2=I-\frac{\lambda}{2}B
+$$
+donde
+$$
+B=
+\begin{bmatrix}
+ 2  & -1 & 0 & \ldots\\ 
+ -1 & 2 & -1 & \ldots\\ 
+ 0 & -1 & 2 & \ldots\\ 
+ \vdots & \vdots & \vdots & \ddots 
+\end{bmatrix}
+$$
+
 
 %------------------------------------------------
 
 \section*{Algoritmo}
 
-Fusce in nibh augue. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In dictum accumsan sapien, ut hendrerit nisi. Phasellus ut nulla mauris. Phasellus sagittis nec odio sed posuere. Vestibulum porttitor dolor quis suscipit bibendum. Mauris risus lectus, cursus vitae hendrerit posuere, congue ac est. Suspendisse commodo eu eros non cursus. Mauris ultrices venenatis dolor, sed aliquet odio tempor pellentesque. Duis ultricies, mauris id lobortis vulputate, tellus turpis eleifend elit, in gravida leo tortor ultricies est. Maecenas vitae ipsum at dui sodales condimentum a quis dui. Nam mi sapien, lobortis ac blandit eget, dignissim quis nunc.
+%------------------------------------------------
 
-\begin{enumerate}
-\item First numbered list item
-\item Second numbered list item
-\end{enumerate}
-
-Donec luctus tincidunt mauris, non ultrices ligula aliquam id. Sed varius, magna a faucibus congue, arcu tellus pellentesque nisl, vel laoreet magna eros et magna. Vivamus lobortis elit eu dignissim ultrices. Fusce erat nulla, ornare at dolor quis, rhoncus venenatis velit. Donec sed elit mi. Sed semper tellus a convallis viverra. Maecenas mi lorem, placerat sit amet sem quis, adipiscing tincidunt turpis. Cras a urna et tellus dictum eleifend. Fusce dignissim lectus risus, in bibendum tortor lacinia interdum.
+\section*{Aplicaciones}
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
