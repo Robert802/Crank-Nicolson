@@ -27,7 +27,7 @@
 \usepackage{amsmath}
 \usepackage{enumerate} 
 \usepackage{mathpazo} % Use the Palatino font
-\usepackage{listings} %include code sections
+\usepackage[framed,numbered]{matlab-prettifier} %include code sections
 \usepackage[T1]{fontenc} % Required for accented characters
 \usepackage[utf8x]{inputenc} % Enecoding used in the document
 \usepackage[spanish]{babel}
@@ -57,7 +57,7 @@
 \title{\textbf{Solución numérica de ecuaciones diferenciales parciales parabólicas por el método de Crank-Nicolson.}\\ % Title
 %Focused and Deliciously Witty Subtitle} % Subtitle
 }
-\author{\textsc{Roberto Largo Taborda, Duban Arley Medina Eusse} % Author
+\author{\textsc{Duban Arley Medina Eusse, Roberto L. Taborda} % Author
 \\{\textit{Universidad Nacional de Colombia}}} % Institution
 
 \date{\today} % Date
@@ -75,10 +75,10 @@
 \renewcommand{\abstractname}{Resumen} % Uncomment to change the name of the abstract to something else
 
 \begin{abstract}
-Las ecuaciones diferenciales parabólicas pueden ser solucionadas computacionalmente mediante dos métodos ampliamente conocidos como lo son el de las diferencias hacia atrás y hacia adelante. El método de diferencias hacia adelante de carácter explicito presenta inestabilidad bajo ciertas condiciones, mientras que el método de las diferencias hacia atrás es de carácter implícito por lo cual es estable, pero con el defecto de que a pesar de que su error de truncación espacial es de orden dos su error de truncación temporal es de orden uno, por lo anterior se hace necesario el estudio de un método que corrija dichos percances, en el documento se estudia como surge el método y su implementación computacional.
+Las ecuaciones diferenciales parciales parabólicas pueden ser solucionadas computacionalmente usando dos métodos ampliamente conocidos, como lo son el de las diferencias hacia atrás y hacia adelante. El método de diferencias hacia adelante, de carácter explicito, presenta inestabilidad bajo ciertas condiciones. Por otro lado el método de las diferencias hacia atrás es de carácter implícito, lo cual lo hace estable, con el defecto de que a pesar de que su error de truncación espacial es de orden dos, su error de truncación temporal es de orden uno. Por lo anterior se hace necesario el estudio de un método que corrija dichos percances. En el presente documento se estudia como surge el método requerido y su implementación computacional.
 \end{abstract}
 
-\hspace*{3,6mm}\textit{Keywords:} lorem , ipsum , dolor , sit amet , lectus % Keywords
+%\hspace*{3,6mm}\textit{Keywords:} lorem , ipsum , dolor , sit amet , lectus % Keywords
 
 \vspace{30pt} % Some vertical space between the abstract and first section
 
@@ -86,42 +86,35 @@ Las ecuaciones diferenciales parabólicas pueden ser solucionadas computacionalm
 %	ESSAY BODY
 %----------------------------------------------------------------------------------------
 
-\section*{Introduction}
+\section*{Introducción}
 
-El método de diferencias hacia adelante es de carácter totalmente explícito, pero con el problema de que sólo para ciertos valores de
-\begin{equation}
-\lambda =\frac{\alpha ^2 k}{h^2}
-\end{equation}
-, mas precisamente para
-\begin{equation}
-\lambda < \frac{1}{2}
-\end{equation}, presenta un comportamiento estable en los cálculos. La primera solución ha sido reemplazarlo por el método de diferencias hacia atrás que no tiene ningún problema de estabilidad, aunque a cambio era un método implícito, precisando de la resolución de un sistema lineal para cada avance del tiempo.
+El método de diferencias hacia adelante es de carácter totalmente explícito, pero con el problema de que sólo para ciertos valores de $\lambda =\frac{\alpha ^2 k}{h^2}$, mas precisamente para $\lambda < \frac{1}{2}$, presenta un comportamiento estable en los cálculos. La primera solución ha sido reemplazarlo por el método de diferencias hacia atrás que no tiene ningún problema de estabilidad, a pesar de ser un método implícito, el cual requiere de la resolución de un sistema lineal para cada avance del tiempo.
 
-Pero ambos llevaban asociados un orden de truncación del tipo $O(h2) + O(k)$, o sea orden 1 en el tiempo, lo que suele ser poco en los casos prácticos en los que una precisión adecuada obliga a distanciar muy poco los nodos de t, o sea a tomar k muy pequeño. Existe un método que, con la dificultad de ser implícito, no tiene problemas de estabilidad y además posee un orden de truncación $O(h2) + O(k2)$, permitiendo entonces disminuciones menos importantes del paso k manteniendo una buena precisión de los resultados, Este es el denominado método de Crank-Nicolson.
+Pero ambos llevaban asociados un orden de truncación del tipo $O(h^2) + O(k)$, es decir orden 1 en el tiempo, que suele ser poco en los casos prácticos en los que una precisión adecuada obliga a distanciar muy poco los nodos de t, es decir a tomar $k$ muy pequeño. Existe un método que, con la dificultad de ser implícito, no tiene problemas de estabilidad y además posee un orden de truncación $O(h^2) + O(k^2)$, permitiendo entonces disminuciones menos importantes del paso k manteniendo una buena precisión de los resultados, Este es el denominado método de Crank-Nicolson.
 
 %------------------------------------------------
 
 \section*{Desarollo matemático}
 
-El probrema a solucionar esta dado por:
+El probrema a solucionar esta dado por la ecuación diferencial parcial:
 $$\frac{\partial u}{\partial t}=\alpha^2\frac{\partial^2 u}{\partial x^2}$$
-Bajo las siguientes condiciones:
+Bajo las siguientes condiciones iniciales y de frontera:
 $$u(x,0)=f(x)$$
 $$u(0,t)=0\hspace{1cm}u(l,t)=0$$
 Para el método de las diferencias hacia adelante se tiene:
 $$\frac{u_{n,m+1}-u_{n,m}}{k}-\alpha^2\frac{u_{n+1,m}-2u_{n,m}+u_{n-1,m}}{h^2}=0$$
 Para el método de las diferencias hacia atrás se tiene: 
 $$\frac{u_{n,m}-u_{n,m-1}}{k}-\alpha^2\frac{u_{n+1,m}-2u_{n,m}+u_{n-1,m}}{h^2}=0$$
-Escribiendo la ecuación anterior para m + 1 y realizando la media aritmética entre el método de las diferencias hacia atrás y hacia adelante se obtiene: 
+Escribiendo la ecuación de las diferencias hacia atras para m + 1 y realizando la media aritmética entre el método de las diferencias hacia atrás y hacia adelante se obtiene: 
 $$\frac{u_{n,m+1}-u_{n,m}}{k}-\frac{\alpha^2}{2}(\frac{u_{n+1,m}-2u_{n,m}+u_{n-1,m}}{h^2}+\frac{u_{n+1,m+1}-2u_{n,m+1}+u_{n-1,m+1}}{h^2})=0$$
 La anterior ecuación es la correspondiente al método de Crank-nicolson, para llevarla a su forma matricial:
 
 $$(1+\lambda)u_{n,m+1}-\frac{\lambda}{2}u_{n+1,m+1}-\frac{\lambda}{2}u_{n-1,m+1}=(1-\lambda)u_{n,m}+\frac{\lambda}{2}u_{n+1,m}+\frac{\lambda}{2}u_{n-1,m}$$
 $$u^{(m)}=(u_{1,m},u_{2,m},\ldots,u_{N-1,m})$$
-$$A_1u^{(m+1)}=A_2u^{(m)}$$
-Donde
+$$Au^{(m+1)}=Bu^{(m)}$$
+Donde $A$ y $B$ son matrices tridiagonales:
 $$
-A_1=
+A=
 \begin{bmatrix}
   1+\lambda  & -\frac{\lambda}{2} & 0 & \ldots\\ 
  -\frac{\lambda}{2} & 1+\lambda & -\frac{\lambda}{2} & \ldots\\ 
@@ -130,7 +123,7 @@ A_1=
 \end{bmatrix}
 $$
 $$
-A_2=
+B=
 \begin{bmatrix}
  1-\lambda  & \frac{\lambda}{2} & 0 & \ldots\\ 
  \frac{\lambda}{2} & 1-\lambda & \frac{\lambda}{2} & \ldots\\ 
@@ -138,16 +131,18 @@ A_2=
  \vdots & \vdots & \vdots & \ddots 
 \end{bmatrix}
 $$
-Podemos escribir en terminos de una solo matriz B a $A_1$ y $A_2$
+Con
+$$\lambda=\dfrac{\alpha^{2}k}{h^{2}}$$
+Podemos escribir en terminos de una solo matriz $C$ a $A$ y $B$
 $$
-A_1=I+\frac{\lambda}{2}B
+A=I+\frac{\lambda}{2}C
 $$
 $$
-A_2=I-\frac{\lambda}{2}B
+B=I-\frac{\lambda}{2}C
 $$
 donde
 $$
-B=
+C=
 \begin{bmatrix}
  2  & -1 & 0 & \ldots\\ 
  -1 & 2 & -1 & \ldots\\ 
@@ -158,13 +153,12 @@ $$
 
 
 %------------------------------------------------
-
+\newpage
 \section*{Algoritmo}
 
-\begin{lstlisting}[language=Matlab]
+\begin{lstlisting}[style=Matlab-editor]
 function w = crnkNclsn(L,T,alpha,m,n,funk)
-% Funcion que usa el metodo de Crank-Nicolson para aproximar la 
-% solucion de la ecuacion diferencial parcial:
+% Funcion que usa el metodo de Crank-Nicolson para aproximar la solucion de la ecuacion diferencial parcial:
 %	du/dt (x,t) - alpha^2 d^2u/dx^2 (x,t) = 0
 % Sujeta a las condicones de frontera:
 %	u(0,t) = u(L,t) = 0, 0<t<T
@@ -173,8 +167,7 @@ function w = crnkNclsn(L,T,alpha,m,n,funk)
 % Los argumentos de la funcion son:
 %	L : Limite superior de la variable espacial (x).
 %	T :Limite superior de la variable temporal (t).
-%	alpha :Raiz cuadrada de el coeficiente de la segunda derivada 
-% 		espacial.
+%	alpha :Raiz cuadrada de el coeficiente de la segunda derivada espacial.
 %	m :Numero de intervalos espaciales para la creacion de la malla.
 %	n :Numero de intervalos Temporales para la creacion de la malla.
 %	w :Aproximacion a u(x,t) de manera discreta en x y t.
@@ -190,23 +183,20 @@ w = sparse(m+1,n);
 w(2:m,1) = funk(h.*(1:(m-1)).')
 
 % Se procede a construir las matrices A y B con base en lambda
-% Primero se arman matrices que contengan las tres diagonales 
-%	principales.
+% Primero se arman matrices que contengan las tres diagonales principales.
 Adiag = repmat([-lambda./2 1+lambda -lambda./2],m-1,1);
 Bdiag = repmat([lambda./2 1-lambda lambda./2],m-1,1);
 % Despues se organizan en las diagonales de matrices sparse.
 A = spdiags(Adiag,[-1 0 1],m-1,m-1)
 B = spdiags(Bdiag,[-1 0 1],m-1,m-1)
 
-% Se completa la aproximacion w con un ciclo para solucionar el
-% sistema:
+% Se completa la aproximacion w con un ciclo para solucionar el sistema:
 %	A w(:,i+1) = B w(:,i)
 for i = 1: (n-1)
 	w(2:m,i+1) = A\(B*w(2:m,i));
 end
 
-% Para presentar la matriz la pasamos de sparse a su version
-% completa.
+% Para presentar la matriz la pasamos de sparse a su version completa.
 w = full(w);
 end
 \end{lstlisting}
@@ -224,9 +214,9 @@ El método de Crank-Nicolson puede ser aplicado para encontrar soluciones aproxi
 %	BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
 
-\bibliographystyle{unsrt}
+%\bibliographystyle{unsrt}
 
-\bibliography{sample}
+%\bibliography{sample}
 
 %----------------------------------------------------------------------------------------
 
