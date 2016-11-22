@@ -209,6 +209,30 @@ El método de Crank-Nicolson puede ser aplicado para encontrar soluciones aproxi
     \item Densidad de neutrones en un reactor nuclear.
     \item La ecuación de Schrödinger dependiente del tiempo.
 \end{itemize}
+A modo de ejemplo usaremos ecuación de Schrödinger para llegar a la forma matricial del método. La ecuación de Schrödinger dependiente del tiempo es:
+$$
+i\hbar\frac{\partial \psi }{\partial t} = -\frac{\hbar^2}{2m}\frac{\partial^2 \psi }{\partial x^2}+V(x)\psi 
+$$
+se define el operador hamiltoniano como:
+$$
+\hat{H} = -\frac{\hbar^2}{2m}\frac{\partial^2 }{\partial x^2}+V(x)
+$$
+Discretizando con el método de diferencias hacia adelante:
+$$
+i\hbar\frac{\psi_{j,n+1}-\psi_{j,n}}{k}=\hat{H}\psi _{j,n}
+$$
+Solucionando para $\psi_{j,n+1}$, se puede escribir en notación matricial:
+$$
+\Psi^{n+1}=\left ( I-\frac{ik}{\hbar}\hat{H} \right )\Psi^{n}
+$$
+Análogamente para el método de las diferencias hacia atrás se obtiene
+$$
+\Psi^{n+1}=\left ( I+\frac{ik}{\hbar}\hat{H} \right )^{-1}\Psi^{n}
+$$
+Para el método de Cranck-Nicolson realizamos el promedio con lo que se obtiene
+$$
+\Psi^{n+1}=\left ( I+\frac{ik}{\hbar}\hat{H} \right )^{-1}\left( I-\frac{ik}{\hbar}\hat{H} \right )\Psi^{n}
+$$
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
