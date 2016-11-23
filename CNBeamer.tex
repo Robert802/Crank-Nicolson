@@ -53,7 +53,7 @@ Bajo las siguientes condiciones iniciales y de frontera:
 $$u(x,0)=f(x)$$
 $$u(0,t)=0\hspace{1cm}u(l,t)=0$$
 \end{frame}
-\begin{frame}{Desarollo matemático}[shrink=100]
+\begin{frame}{Desarollo matemático}
 Escribiendo la ecuación de las diferencias hacia atras para m + 1 y realizando la media aritmética entre el método de las diferencias hacia atrás y hacia adelante se obtiene: 
 $$\frac{u_{n,m+1}-u_{n,m}}{k}-$$
 $$\frac{\alpha^2}{2}(\frac{u_{n+1,m}-2u_{n,m}+u_{n-1,m}}{h^2}+\frac{u_{n+1,m+1}-2u_{n,m+1}+u_{n-1,m+1}}{h^2})=0$$
@@ -90,17 +90,76 @@ B=
 \end{bmatrix}
 $$
 \end{frame}
-\begin{frame}
+\begin{frame}{Implementación Computacional}
+Inicialmene definamos los argumentos de nuestra función:
+\begin{itemize}
+	\item $L$ (Escalar): Limite superior de la variable espacial $(x)$.
+	\item $T$ (Escalar): Limite superior de la variable temporal $(t)$.
+	\item $alpha$ (Escalar): Raiz cuadradea de el coeficiente que acompaña a $\frac{\partial^2 u}{\partial x^2}$
+	\item $n$ (Entero): Número de intervalos temporales a usar.
+	\item $m$ (Entero): Número de intervalos espaciales a usar.
+	\item $funk$ (Function handle): Función que representa el estado inicial de $u(x,t)=u(x,0)$ 
+\end{itemize}
 \end{frame}
-\begin{frame}
+\begin{frame}{Implementación Computacional}
+\framesubtitle{Definición}
+Primero definimos la función:
+\begin{itemize}
+	\item \lstinline[style=Matlab-editor]!function w = crnkNclsn(L,T,alpha,m,n,funk)!
+\end{itemize} 
+Despues debemos definir $h$, $k$, y $lamdba$
+\begin{itemize}
+	\item \lstinline[style=Matlab-editor]!h = L./m;!
+	\item \lstinline[style=Matlab-editor]!k = T./n;!
+	\item \lstinline[style=Matlab-editor]!lambda = (alpha.^2).*k./(h.^2);!
+\end{itemize}
 \end{frame}
-\begin{frame}
+\begin{frame}{Implementación Computacional}
+\framesubtitle{Construcción de matrices}
+Inicializamos los valores de la primera columna($f(x)=u(x,0)$) de la matriz que representa nuestra aproximación:
+\begin{itemize}
+	\item \lstinline[style=Matlab-editor]!w(2:m,1) = funk(h.*(1:(m-1)).')!
+\end{itemize}
+Y construmios las matrices $A$ y $B$ definidas anteriormente:\newline
+Sabemos que las matrices son tridiagonales asi que primero construiremos sus diagonales como las columnas de otras matrices:
+\begin{itemize}
+	\item \lstinline[style=Matlab-editor]!Adiag = repmat([-lambda./2 1+lambda -lambda./2],m-1,1);!
+	\item \lstinline[style=Matlab-editor]!Bdiag = repmat([lambda./2 1-lambda lambda./2],m-1,1);!
+\end{itemize}
 \end{frame}
-\begin{frame}
+
+\begin{frame}{Implementación Computacional}
+\framesubtitle{Construcción de matrices}
+Pero de que nos sirve representar las diagonales que necesitamos a manera de columnas?\newline
+Facilmente podemos convertir dichas columnas en las diagonales que queramos de una matriz sparse con el siguente comando:
+\begin{itemize}
+	\item \lstinline[style=Matlab-editor]!A = spdiags(Adiag,[-1 0 1],m-1,m-1)!
+	\item \lstinline[style=Matlab-editor]!B = spdiags(Bdiag,[-1 0 1],m-1,m-1)!
+\end{itemize}
 \end{frame}
-\begin{frame}
+\begin{frame}{Implementación Computacional}
+\framesubtitle{Solución del sistema de ecuaciones.}
+Una vez se tienen definidas las matrices el problema se resume en 
+$$Au^{(m+1)}=Bu^{(m)}$$
+Para ello un solo ciclo debe ser suficiente y gracias a la facilidad que posee el software para manipular matrices la solución del sistema se reduce a:\newline
+\lstinline[style=Matlab-editor]!for i = 1: (n-1)!\newline
+\lstinline[style=Matlab-editor]!\	w(2:m,i+1) = A\\(B*w(2:m,i));!\newline
+\lstinline[style=Matlab-editor]!end!
 \end{frame}
-\begin{frame}
+\begin{frame}{Implementación Computacional}
+\framesubtitle{Presentación de los resultados}
+Finalmente para presentar los resultados de nuestra aproximacion volvemos nuestra matriz una matriz completa:
+\begin{itemize}
+	\item \lstinline[style=Matlab-editor]!w = full(w);!
+\end{itemize}
+Adicionalmente si se requiere se puede presentar la evolucion temporal de nuestra aproximacion:
+\begin{itemize}
+	\item \lstinline[style=Matlab-editor]!x = linspace(0,L,m+1);! \newline
+	\lstinline[style=Matlab-editor]!for i=1:n! \newline
+	\lstinline[style=Matlab-editor]!plot(x,w(:,i)')! \newline
+	\lstinline[style=Matlab-editor]!F(i)=getframe(1)! \newline
+	\lstinline[style=Matlab-editor]!end! \newline
+\end{itemize}
 \end{frame}
 \begin{frame}
 \end{frame}
